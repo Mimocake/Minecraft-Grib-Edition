@@ -1,4 +1,6 @@
 #include "Block.hpp"
+using namespace sf;
+using namespace std;
 
 Block::Block(Vector3f origin)
 {
@@ -35,17 +37,7 @@ void Block::project()
 	proj_tris = vector<Triangle>(0);
 	for (int i = 0; i < tris.size(); i++)
 	{
-		Triangle temp1 = tris[i];
-		for (int j = 0; j < 3; j++)
-		{
-			//temp1.coords[j] = mat4x4_mult(temp1.coords[j], rotx_mat);
-		}
-		Triangle temp2 = temp1;
-		for (int j = 0; j < 3; j++)
-		{
-			temp2.coords[j].z += 1.5;
-			temp2.coords[j] = mat4x4_mult(temp2.coords[j], proj_mat);
-		}
-		proj_tris.push_back(temp2);
+		tris[i].project();
+		proj_tris.push_back(tris[i]);
 	}
 }

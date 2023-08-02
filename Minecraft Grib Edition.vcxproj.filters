@@ -24,9 +24,6 @@
     <ClCompile Include="src\Triangle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Functions.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Block.hpp">
@@ -35,7 +32,7 @@
     <ClInclude Include="src\Triangle.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Functions.hpp">
+    <ClInclude Include="src\math.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

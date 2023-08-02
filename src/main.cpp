@@ -1,15 +1,13 @@
-#include <SFML/Graphics.hpp>
-#include <Windows.h>
-#include <iostream>
 #include "Block.hpp"
-using namespace sf;
 using namespace std;
+using namespace sf;
 
 int main()
 {
-    RenderWindow window(VideoMode(1000, 1000), "Minecraft", Style::Fullscreen);
+    RenderWindow window(VideoMode(), "Minecraft", Style::Fullscreen);
     window.setVerticalSyncEnabled(true);
-    Block block(Vector3f(-0.5, -0.5, -0.5));
+    window.setMouseCursorVisible(false);
+    Block block(Vector3f(1, 0.4, 0));
     block.project();
     while (window.isOpen())
     {
