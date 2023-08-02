@@ -45,4 +45,19 @@ namespace math
 		}
 		return sf::Vector3f(res[0], res[1], res[2]);
 	}
+
+	inline sf::Vector3f cross_prod(sf::Vector3f a, sf::Vector3f b)
+	{
+		return sf::Vector3f(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x);
+	}
+
+	inline float dot_prod(sf::Vector3f a, sf::Vector3f b)
+	{
+		return a.x * b.x + a.y * b.y + a.z * b.z;
+	}
+
+	inline void norm(sf::Vector3f& vec)
+	{
+		vec /= sqrt(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
+	}
 };
