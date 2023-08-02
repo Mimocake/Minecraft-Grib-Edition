@@ -9,7 +9,7 @@ int main()
 {
     RenderWindow window(VideoMode(1000, 1000), "Minecraft", Style::Fullscreen);
     window.setVerticalSyncEnabled(true);
-    Block block(Vector3f(-0.5, -0.5, 6));
+    Block block(Vector3f(-0.5, -0.5, -0.5));
     block.project();
     while (window.isOpen())
     {
@@ -29,18 +29,13 @@ int main()
         window.clear();
         for (int i = 0; i < block.proj_tris.size(); i++)
         {
-            ConvexShape tri(3);
-            for (int j = 0; j < 3; j++)
+            VertexArray tri(LinesStrip, 4);
+            for (int j = 0; j < 4; j++)
             {
-                float x = (block.proj_tris[i].coords[j].x + 1);
-                x *= window.getSize().x * 0.5;
-                float y = (block.proj_tris[i].coords[j].y + 1);
-                y *= window.getSize().y / 2;
-                cout << x << " " << y << endl;
-                tri.setPoint(j, Vector2f(x, y));
+                float x = (block.proj_tris[i].coords[j % 3].x + 1) * window.getSize().x / 2;
+                float y = (block.proj_tris[i].coords[j % 3].y + 1) * window.getSize().y / 2;
+                tri[j] = Vector2f(x, y);
             }
-            tri.setFillColor(Color::Red);
-            tri.setOutlineThickness(1);
             window.draw(tri);
         }
         window.display();
