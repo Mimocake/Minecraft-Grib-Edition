@@ -8,6 +8,7 @@ private:
 	sf::RenderWindow window;
 public:
 	bool keys[6];
+	sf::Vector2f mouse_offset;
 	Screen();
 	void draw_block(math::vec3, Block&);
 	bool events_handling();

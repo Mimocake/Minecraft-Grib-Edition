@@ -4,6 +4,8 @@
 
 namespace math
 {
+	const float PI = 3.14159f;
+
 	class mat4x4
 	{
 	public:
@@ -27,8 +29,8 @@ namespace math
 	const float FOV = 90;
 
 	const std::vector<std::vector<float>> proj_vec = {
-		{aspect / tanf(FOV / 2 / 180 * 3.14159f), 0, 0, 0},
-		{0, 1 / tanf(FOV / 2 / 180 * 3.14159f), 0, 0},
+		{aspect / tanf(FOV / 2 / 180 * PI), 0, 0, 0},
+		{0, 1 / tanf(FOV / 2 / 180 * PI), 0, 0},
 		{0, 0, fFar / (fFar - fNear), 1},
 		{0, 0, -fFar * fNear / (fFar - fNear), 0}
 	};
@@ -52,6 +54,42 @@ namespace math
 		friend vec3 cross_prod(vec3 a, vec3 b) { return vec3(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x); }
 		friend void norm(vec3& vec) { vec /= sqrt(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z); }
 	};
+
+	inline mat4x4 Matrix_MakeRotationX(float fAngleRad)
+	{
+		mat4x4 matrix;
+		matrix.m[0][0] = 1.0f;
+		matrix.m[1][1] = cosf(fAngleRad);
+		matrix.m[1][2] = sinf(fAngleRad);
+		matrix.m[2][1] = -sinf(fAngleRad);
+		matrix.m[2][2] = cosf(fAngleRad);
+		matrix.m[3][3] = 1.0f;
+		return matrix;
+	}
+
+	inline mat4x4 Matrix_MakeRotationY(float fAngleRad)
+	{
+		mat4x4 matrix;
+		matrix.m[0][0] = cosf(fAngleRad);
+		matrix.m[0][2] = sinf(fAngleRad);
+		matrix.m[2][0] = -sinf(fAngleRad);
+		matrix.m[1][1] = 1.0f;
+		matrix.m[2][2] = cosf(fAngleRad);
+		matrix.m[3][3] = 1.0f;
+		return matrix;
+	}
+
+	inline mat4x4 Matrix_MakeRotationZ(float fAngleRad)
+	{
+		mat4x4 matrix;
+		matrix.m[0][0] = cosf(fAngleRad);
+		matrix.m[0][1] = sinf(fAngleRad);
+		matrix.m[1][0] = -sinf(fAngleRad);
+		matrix.m[1][1] = cosf(fAngleRad);
+		matrix.m[2][2] = 1.0f;
+		matrix.m[3][3] = 1.0f;
+		return matrix;
+	}
 
 	inline math::vec3 proj_mat_mult(math::vec3 p, mat4x4 mat)
 	{

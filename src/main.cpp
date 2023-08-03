@@ -28,6 +28,7 @@ int main()
         if (screen.keys[5]) vel = vel + vec3(0, 0.1, 0);
         cam.loc = cam.loc + vel;
 
+        cam.turn(screen.mouse_offset.x, screen.mouse_offset.y);
         vec3 target = cam.loc + cam.look_dir;
         mat4x4 matCam = mat_pointAt(cam.loc, target, up);
         mat4x4 matView = mat_inverse(matCam);
