@@ -1,15 +1,9 @@
 #pragma once
 #include <vector>
 #include <math.h>
-#include <SFML/Graphics.hpp>
 
 namespace math
 {
-	const float aspect = 9.0 / 16.0;
-	const float fNear = 0.1;
-	const float fFar = 1000;
-	const float FOV = 90;
-
 	class mat4x4
 	{
 	public:
@@ -27,23 +21,42 @@ namespace math
 		}
 	};
 
-	inline math::mat4x4 mat_makeProj()
-	{
-		float fFovRad = 1.0f / tanf(FOV * 0.5f / 180.0f * 3.14159f);
-		math::mat4x4 matrix;
-		matrix.m[0][0] = aspect * fFovRad;
-		matrix.m[1][1] = fFovRad;
-		matrix.m[2][2] = fFar / (fFar - fNear);
-		matrix.m[3][2] = (-fFar * fNear) / (fFar - fNear);
-		matrix.m[2][3] = 1.0f;
-		matrix.m[3][3] = 0.0f;
-		return matrix;
-	}
+	const float aspect = 9.0 / 16.0;
+	const float fNear = 0.1;
+	const float fFar = 1000;
+	const float FOV = 90;
 
-	inline sf::Vector3f mat4x4_mult(sf::Vector3f p, mat4x4 mat)
+	const std::vector<std::vector<float>> proj_vec = {
+		{aspect / tanf(FOV / 2 / 180 * 3.14159f), 0, 0, 0},
+		{0, 1 / tanf(FOV / 2 / 180 * 3.14159f), 0, 0},
+		{0, 0, fFar / (fFar - fNear), 1},
+		{0, 0, -fFar * fNear / (fFar - fNear), 0}
+	};
+	const mat4x4 proj_mat(proj_vec);
+
+	class vec3
 	{
-		float res[3] = {0, 0, 0};
-		float vec[3] = {p.x, p.y, p.z};
+	public:
+		float x, y, z, w;
+		vec3() : x(0), y(0), z(0), w(1) {}
+		vec3(float xx, float yy, float zz) : x(xx), y(yy), z(zz), w(1) {}
+		friend vec3 operator + (vec3 v1, vec3 v2) { return vec3(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z); }
+		friend vec3 operator - (vec3 v1, vec3 v2) { return vec3(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z); }
+		friend vec3 operator * (vec3 v, float f) { return vec3(v.x * f, v.y * f, v.z * f); }
+		friend vec3 operator / (vec3 v, float f) { return vec3(v.x / f,v. y / f, v.z / f); }
+		friend void operator += (vec3 v1, vec3 v2) { v1.x += v2.x; v1.y += v2.y; v1.z += v2.z; }
+		friend void operator -= (vec3 v1, vec3 v2) { v1.x -= v2.x; v1.y -= v2.y; v1.z -= v2.z; }
+		friend void operator *= (vec3 v, float f) { v.x * f; v.y * f; v.z * f; }
+		friend void operator /= (vec3 v, float f) { v.x / f, v.y / f, v.z / f; }
+		friend float dot_prod(vec3 v1, vec3 v2) { return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z; }
+		friend vec3 cross_prod(vec3 a, vec3 b) { return vec3(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x); }
+		friend void norm(vec3& vec) { vec /= sqrt(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z); }
+	};
+
+	inline math::vec3 proj_mat_mult(math::vec3 p, mat4x4 mat)
+	{
+		std::vector<float> res(3, 0);
+		std::vector<float> vec = { p.x, p.y, p.z };
 		for (int i = 0; i < 3; i++)
 		{
 			for (int j = 0; j < 3; j++)
@@ -53,22 +66,17 @@ namespace math
 		}
 		float w = p.x * mat.m[0][3] + p.y * mat.m[1][3] + p.z * mat.m[2][3] + mat.m[3][3];
 		res[0] /= w; res[1] /= w;
-		return sf::Vector3f(res[0], res[1], res[2]);
+		return math::vec3(res[0], res[1], res[2]);
 	}
 
-	inline sf::Vector3f cross_prod(sf::Vector3f a, sf::Vector3f b)
+	inline math::vec3 mat4x4_mult(math::vec3 i, mat4x4 m)
 	{
-		return sf::Vector3f(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x);
-	}
-
-	inline float dot_prod(sf::Vector3f a, sf::Vector3f b)
-	{
-		return a.x * b.x + a.y * b.y + a.z * b.z;
-	}
-
-	inline void norm(sf::Vector3f& vec)
-	{
-		vec /= sqrt(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
+		vec3 v;
+		v.x = i.x * m.m[0][0] + i.y * m.m[1][0] + i.z * m.m[2][0] + i.w * m.m[3][0];
+		v.y = i.x * m.m[0][1] + i.y * m.m[1][1] + i.z * m.m[2][1] + i.w * m.m[3][1];
+		v.z = i.x * m.m[0][2] + i.y * m.m[1][2] + i.z * m.m[2][2] + i.w * m.m[3][2];
+		v.w = i.x * m.m[0][3] + i.y * m.m[1][3] + i.z * m.m[2][3] + i.w * m.m[3][3];
+		return v;
 	}
 
 	inline mat4x4 mat_inverse(mat4x4& m)
@@ -84,16 +92,16 @@ namespace math
 		return matrix;
 	}
 
-	inline math::mat4x4 mat_pointAt(sf::Vector3f& pos, sf::Vector3f& target, sf::Vector3f& up)
+	inline math::mat4x4 mat_pointAt(math::vec3& pos, math::vec3& target, math::vec3& up)
 	{
-		sf::Vector3f newFor = target - pos;
-		math::norm(newFor);
+		math::vec3 newFor = target - pos;
+		norm(newFor);
 
-		sf::Vector3f a = newFor * math::dot_prod(up, newFor);
-		sf::Vector3f newUp = up - a;
-		math::norm(newUp);
+		math::vec3 a = newFor * dot_prod(up, newFor);
+		math::vec3 newUp = up - a;
+		norm(newUp);
 		
-		sf::Vector3f newRight = math::cross_prod(newUp, newFor);
+		math::vec3 newRight = cross_prod(newUp, newFor);
 
 		math::mat4x4 matrix;
 		matrix.m[0][0] = newRight.x;	matrix.m[0][1] = newRight.y;	matrix.m[0][2] = newRight.z;	matrix.m[0][3] = 0.0f;
@@ -102,5 +110,4 @@ namespace math
 		matrix.m[3][0] = pos.x;			matrix.m[3][1] = pos.y;			matrix.m[3][2] = pos.z;			matrix.m[3][3] = 1.0f;
 		return matrix;
 	}
-
 };

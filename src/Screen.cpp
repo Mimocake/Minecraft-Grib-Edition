@@ -1,5 +1,6 @@
 #include "Screen.hpp"
 using namespace sf;
+using namespace math;
 
 Screen::Screen() : window(VideoMode(), "Minecraft", Style::Fullscreen)
 {
@@ -8,22 +9,22 @@ Screen::Screen() : window(VideoMode(), "Minecraft", Style::Fullscreen)
     for (int i = 0; i < 6; i++) keys[i] = false;
 }
 
-void Screen::draw_block(Vector3f cam, Block& block)
+void Screen::draw_block(vec3 cam, Block& block)
 {
     if (window.isOpen())
     {
         window.clear();
-        for (int i = 0; i < block.proj_tris.size(); i++)
+        for (int i = 0; i < block.tris.size(); i++)
         {
-            Vector3f cam_dir = cam - block.proj_tris[i].coords[0];
-            math::norm(cam_dir);
-            if (math::dot_prod(cam_dir, block.proj_tris[i].normal) > 0)
+            vec3 cam_dir = cam - block.tris[i].coords[0];
+            norm(cam_dir);
+            if (dot_prod(cam_dir, block.tris[i].normal) > 0)
             {
                 VertexArray tri(LinesStrip, 4);
                 for (int j = 0; j < 4; j++)
                 {
-                    float x = (block.proj_tris[i].coords[j % 3].x + 1) * window.getSize().x / 2;
-                    float y = (block.proj_tris[i].coords[j % 3].y + 1) * window.getSize().y / 2;
+                    float x = (block.tris[i].proj_coords[j % 3].x + 1) * window.getSize().x / 2;
+                    float y = (block.tris[i].proj_coords[j % 3].y + 1) * window.getSize().y / 2;
                     tri[j] = Vector2f(x, y);
                 }
                 window.draw(tri);

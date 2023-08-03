@@ -5,7 +5,6 @@ class Block
 {
 public:
 	std::vector<Triangle> tris;
-	std::vector<Triangle> proj_tris;
-	Block(sf::Vector3f);
+	Block(math::vec3);
 	void project(math::mat4x4);
 };

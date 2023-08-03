@@ -4,9 +4,11 @@
 class Triangle
 {
 public:
-	std::vector<sf::Vector3f> coords;
-	sf::Vector3f normal;
-	Triangle(sf::Vector3f, sf::Vector3f, sf::Vector3f);
+	math::vec3 coords[3];
+	math::vec3 viewed_coords[3];
+	math::vec3 proj_coords[3];
+	math::vec3 normal;
+	Triangle(math::vec3, math::vec3, math::vec3);
 	Triangle() {}
 	void project(math::mat4x4);
 };
