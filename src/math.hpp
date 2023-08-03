@@ -10,10 +10,10 @@ namespace math
 	const float FOV = 90;
 
 	const std::vector<std::vector<float>> proj_mat = {
-	{a / tanf(FOV / 2 / 180 * 3.14159f), 0, 0, 0},
-	{0, 1 / tanf(FOV / 2 / 180 * 3.14159f), 0, 0},
-	{0, 0, fFar / (fFar - fNear), 1},
-	{0, 0, -fFar * fNear / (fFar - fNear), 0}
+		{a / tanf(FOV / 2 / 180 * 3.14159f), 0, 0, 0},
+		{0, 1 / tanf(FOV / 2 / 180 * 3.14159f), 0, 0},
+		{0, 0, fFar / (fFar - fNear), 1},
+		{0, 0, -fFar * fNear / (fFar - fNear), 0}
 	};
 
 	inline sf::Vector3f mat4x4_mult(sf::Vector3f p, std::vector<std::vector<float>> mat)
