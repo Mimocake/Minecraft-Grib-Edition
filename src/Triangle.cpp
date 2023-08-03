@@ -7,11 +7,12 @@ Triangle::Triangle(sf::Vector3f p1, sf::Vector3f p2, sf::Vector3f p3) : coords(3
 	normal = cross_prod(p2 - p1, p3 - p1);
 }
 
-void Triangle::project()
+void Triangle::project(mat4x4 matView)
 {
 	for (int j = 0; j < 3; j++)
 	{
-		coords[j].z += 1.5;
+		mat4x4 proj_mat = mat_makeProj();
+		coords[j] = mat4x4_mult(coords[j], matView);
 		coords[j] = mat4x4_mult(coords[j], proj_mat);
 	}
 }

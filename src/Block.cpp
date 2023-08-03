@@ -32,12 +32,12 @@ Block::Block(Vector3f origin)
 	proj_tris = {};
 }
 
-void Block::project()
+void Block::project(math::mat4x4 matView)
 {	
 	proj_tris = vector<Triangle>(0);
 	for (int i = 0; i < tris.size(); i++)
 	{
-		tris[i].project();
+		tris[i].project(matView);
 		proj_tris.push_back(tris[i]);
 	}
 }

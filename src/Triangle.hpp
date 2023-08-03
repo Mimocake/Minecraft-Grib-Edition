@@ -8,5 +8,5 @@ public:
 	sf::Vector3f normal;
 	Triangle(sf::Vector3f, sf::Vector3f, sf::Vector3f);
 	Triangle() {}
-	void project();
+	void project(math::mat4x4);
 };
