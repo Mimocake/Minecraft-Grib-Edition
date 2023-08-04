@@ -9,14 +9,12 @@ using namespace math;
 
 int main()
 {
-    Screen screen;
     Camera cam;
+    Screen screen;
     Block block(vec3(-0.5, -0.5, 2));
     vec3 up(0, 1, 0);
-    cam.loc = vec3(0, 0, 0);
-    cam.look_dir = vec3(0, 0, 1);
     norm(cam.look_dir);
-
+     
     while (screen.events_handling())
     {   
         vec3 vel(0, 0, 0);
@@ -28,6 +26,7 @@ int main()
         if (screen.keys[5]) vel = vel + vec3(0, 0.1, 0);
         cam.loc = cam.loc + vel;
 
+        cout << "x " << screen.mouse_offset.x << "y " << screen.mouse_offset.y << " " << screen.tot_mouse_Yoffset << endl;
         cam.turn(screen.mouse_offset.x, screen.mouse_offset.y);
         vec3 target = cam.loc + cam.look_dir;
         mat4x4 matCam = mat_pointAt(cam.loc, target, up);

@@ -27,6 +27,7 @@ namespace math
 	const float fNear = 0.1;
 	const float fFar = 1000;
 	const float FOV = 90;
+	const float sens = 0.8;
 
 	const std::vector<std::vector<float>> proj_vec = {
 		{aspect / tanf(FOV / 2 / 180 * PI), 0, 0, 0},
