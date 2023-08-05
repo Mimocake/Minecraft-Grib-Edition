@@ -32,7 +32,7 @@ Block::Block(vec3 origin)
 }
 
 void Block::project(math::mat4x4 matView)
-{	
+{
 	for (int i = 0; i < tris.size(); i++)
 	{
 		tris[i].project(matView);

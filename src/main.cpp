@@ -14,7 +14,7 @@ int main()
     Block block(vec3(-0.5, -0.5, 2));
     vec3 up(0, 1, 0);
     norm(cam.look_dir);
-     
+    
     while (screen.events_handling())
     {   
         vec3 vel(0, 0, 0);
@@ -24,7 +24,11 @@ int main()
         if (screen.keys[3]) vel += vec3(0.1, 0, 0);
         if (screen.keys[4]) vel += vec3(0, -0.1, 0);
         if (screen.keys[5]) vel += vec3(0, 0.1, 0);
-        cam.loc += vel;
+
+        float phi = acos(dot_prod(cam.look_dir, vec3(0, 0, 1)));
+        phi = (cam.look_dir.x < 0) ? phi : -phi;
+        vec3 rot_vel = mat4x4_mult(vel, Matrix_MakeRotationY(phi));
+        cam.loc += rot_vel;
 
         cam.turn(screen.mouse_offset.x, screen.mouse_offset.y);
         vec3 target = cam.loc + cam.look_dir;

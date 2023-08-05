@@ -1,4 +1,5 @@
 #include "Triangle.hpp"
+using namespace std;
 using namespace math;
 
 Triangle::Triangle(vec3 p1, vec3 p2, vec3 p3)
@@ -12,6 +13,54 @@ void Triangle::project(mat4x4 matView)
 	for (int j = 0; j < 3; j++)
 	{
 		viewed_coords[j] = mat4x4_mult(coords[j], matView);
-		proj_coords[j] = proj_mat_mult(viewed_coords[j], proj_mat);
+		proj_coords[j] = mat4x4_mult(viewed_coords[j], proj_mat);
+		proj_coords[j].x /= proj_coords[j].z; proj_coords[j].y /= proj_coords[j].z;
+	}
+}
+
+vector<Triangle> clip_fun(math::vec3 plane_p, math::vec3 plane_n, Triangle& tri)
+{
+	norm(plane_p);
+
+	auto dist = [&](vec3& p)
+	{
+		vec3 n = p;
+		norm(n);
+		return (plane_n.x * p.x + plane_n.y * p.y + plane_n.z * p.z - dot_prod(plane_n, plane_p));
+	};
+
+	vec3 inside[3];  int inside_count = 0;
+	vec3 outside[3]; int outside_count = 0;
+
+	for (int i = 0; i < 3; i++)
+	{
+		if (dist(tri.coords[i]) >= 0) inside[inside_count++] = tri.coords[i];
+		else outside[outside_count++] = tri.coords[i];
+	}
+
+	if (inside_count == 0) return vector<Triangle>(0);
+	if (inside_count == 3) return vector<Triangle>(1, tri);
+	if (inside_count == 1 && outside_count == 2)
+	{
+		Triangle out;
+		out.coords[0] = inside[0];
+		out.coords[1] = intersectPlane(plane_p, plane_n, inside[0], outside[0]);
+		out.coords[2] = intersectPlane(plane_p, plane_n, inside[0], outside[1]);
+		return vector<Triangle>(1, out);
+	}
+	if (inside_count == 2 && outside_count == 1)
+	{
+		Triangle out1, out2;
+
+		out1.coords[0] = tri.coords[0];
+		out1.coords[1] = tri.coords[1];
+		out1.coords[2] = intersectPlane(plane_p, plane_n, inside[0], outside[0]);
+
+		out2.coords[0] = tri.coords[1];
+		out2.coords[1] = out1.coords[2];
+		out2.coords[2] = intersectPlane(plane_p, plane_n, inside[1], outside[0]);
+
+		vector<Triangle> outvec = { out1, out2 };
+		return outvec;
 	}
 }

@@ -1,4 +1,5 @@
 #include "Screen.hpp"
+#include <iostream>
 using namespace sf;
 using namespace math;
 
@@ -9,7 +10,7 @@ Screen::Screen()  : mouse_offset(Vector2f(0, 0)), tot_mouse_Yoffset(0)
     Mouse::setPosition(Vector2i(temp.getSize().x / 2, temp.getSize().y / 2));
     window.create(VideoMode(), L"Minecraft", Style::Fullscreen);
 	window.setVerticalSyncEnabled(true);
-	window.setMouseCursorVisible(false);
+	window.setMouseCursorVisible(true);
     for (int i = 0; i < 6; i++) keys[i] = false;
 }
 

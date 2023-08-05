@@ -38,9 +38,7 @@ namespace math
 	{
 	public:
 		float m[4][4] = { 0 };
-
 		mat4x4() {}
-
 		mat4x4(std::vector<std::vector<float>> v)
 		{
 			for (int i = 0; i < 4; i++)
@@ -51,69 +49,6 @@ namespace math
 				}
 			}
 		}
-
-		friend mat4x4 Matrix_MakeRotationX(float fAngleRad)
-		{
-			mat4x4 matrix;
-			matrix.m[0][0] = 1.0f;
-			matrix.m[1][1] = cosf(fAngleRad);
-			matrix.m[1][2] = sinf(fAngleRad);
-			matrix.m[2][1] = -sinf(fAngleRad);
-			matrix.m[2][2] = cosf(fAngleRad);
-			matrix.m[3][3] = 1.0f;
-			return matrix;
-		}
-
-		friend mat4x4 Matrix_MakeRotationY(float fAngleRad)
-		{
-			mat4x4 matrix;
-			matrix.m[0][0] = cosf(fAngleRad);
-			matrix.m[0][2] = sinf(fAngleRad);
-			matrix.m[2][0] = -sinf(fAngleRad);
-			matrix.m[1][1] = 1.0f;
-			matrix.m[2][2] = cosf(fAngleRad);
-			matrix.m[3][3] = 1.0f;
-			return matrix;
-		}
-
-		friend mat4x4 Matrix_MakeRotationZ(float fAngleRad)
-		{
-			mat4x4 matrix;
-			matrix.m[0][0] = cosf(fAngleRad);
-			matrix.m[0][1] = sinf(fAngleRad);
-			matrix.m[1][0] = -sinf(fAngleRad);
-			matrix.m[1][1] = cosf(fAngleRad);
-			matrix.m[2][2] = 1.0f;
-			matrix.m[3][3] = 1.0f;
-			return matrix;
-		}
-
-		friend math::vec3 proj_mat_mult(math::vec3 p, mat4x4 mat)
-		{
-			std::vector<float> res(3, 0);
-			std::vector<float> vec = { p.x, p.y, p.z };
-			for (int i = 0; i < 3; i++)
-			{
-				for (int j = 0; j < 3; j++)
-				{
-					res[i] += vec[i] * mat.m[i][j];
-				}
-			}
-			float w = p.x * mat.m[0][3] + p.y * mat.m[1][3] + p.z * mat.m[2][3] + mat.m[3][3];
-			res[0] /= w; res[1] /= w;
-			return math::vec3(res[0], res[1], res[2]);
-		}
-
-		friend math::vec3 mat4x4_mult(math::vec3 i, mat4x4 m)
-		{
-			vec3 v;
-			v.x = i.x * m.m[0][0] + i.y * m.m[1][0] + i.z * m.m[2][0] + i.w * m.m[3][0];
-			v.y = i.x * m.m[0][1] + i.y * m.m[1][1] + i.z * m.m[2][1] + i.w * m.m[3][1];
-			v.z = i.x * m.m[0][2] + i.y * m.m[1][2] + i.z * m.m[2][2] + i.w * m.m[3][2];
-			v.w = i.x * m.m[0][3] + i.y * m.m[1][3] + i.z * m.m[2][3] + i.w * m.m[3][3];
-			return v;
-		}
-
 		friend mat4x4 mat_inverse(mat4x4& m)
 		{
 			mat4x4 matrix;
@@ -126,27 +61,72 @@ namespace math
 			matrix.m[3][3] = 1.0f;
 			return matrix;
 		}
-
-		friend math::mat4x4 mat_pointAt(math::vec3& pos, math::vec3& target, math::vec3& up)
-		{
-			math::vec3 newFor = target - pos;
-			norm(newFor);
-
-			math::vec3 a = newFor * dot_prod(up, newFor);
-			math::vec3 newUp = up - a;
-			norm(newUp);
-
-			math::vec3 newRight = cross_prod(newUp, newFor);
-
-			math::mat4x4 matrix;
-			matrix.m[0][0] = newRight.x;	matrix.m[0][1] = newRight.y;	matrix.m[0][2] = newRight.z;	matrix.m[0][3] = 0.0f;
-			matrix.m[1][0] = newUp.x;		matrix.m[1][1] = newUp.y;		matrix.m[1][2] = newUp.z;		matrix.m[1][3] = 0.0f;
-			matrix.m[2][0] = newFor.x;   	matrix.m[2][1] = newFor.y;   	matrix.m[2][2] = newFor.z;	    matrix.m[2][3] = 0.0f;
-			matrix.m[3][0] = pos.x;			matrix.m[3][1] = pos.y;			matrix.m[3][2] = pos.z;			matrix.m[3][3] = 1.0f;
-			return matrix;
-		}
 	};
+	
+	inline mat4x4 Matrix_MakeRotationX(float fAngleRad)
+	{
+		mat4x4 matrix;
+		matrix.m[0][0] = 1.0f;
+		matrix.m[1][1] = cosf(fAngleRad);
+		matrix.m[1][2] = sinf(fAngleRad);
+		matrix.m[2][1] = -sinf(fAngleRad);
+		matrix.m[2][2] = cosf(fAngleRad);
+		matrix.m[3][3] = 1.0f;
+		return matrix;
+	}
 
+	inline mat4x4 Matrix_MakeRotationY(float fAngleRad)
+	{
+		mat4x4 matrix;
+		matrix.m[0][0] = cosf(fAngleRad);
+		matrix.m[0][2] = sinf(fAngleRad);
+		matrix.m[2][0] = -sinf(fAngleRad);
+		matrix.m[1][1] = 1.0f;
+		matrix.m[2][2] = cosf(fAngleRad);
+		matrix.m[3][3] = 1.0f;
+		return matrix;
+	}
+
+	inline mat4x4 Matrix_MakeRotationZ(float fAngleRad)
+	{
+		mat4x4 matrix;
+		matrix.m[0][0] = cosf(fAngleRad);
+		matrix.m[0][1] = sinf(fAngleRad);
+		matrix.m[1][0] = -sinf(fAngleRad);
+		matrix.m[1][1] = cosf(fAngleRad);
+		matrix.m[2][2] = 1.0f;
+		matrix.m[3][3] = 1.0f;
+		return matrix;
+	}
+
+	inline vec3 mat4x4_mult(math::vec3 i, mat4x4 m)
+	{
+		vec3 v;
+		v.x = i.x * m.m[0][0] + i.y * m.m[1][0] + i.z * m.m[2][0] + i.w * m.m[3][0];
+		v.y = i.x * m.m[0][1] + i.y * m.m[1][1] + i.z * m.m[2][1] + i.w * m.m[3][1];
+		v.z = i.x * m.m[0][2] + i.y * m.m[1][2] + i.z * m.m[2][2] + i.w * m.m[3][2];
+		v.w = i.x * m.m[0][3] + i.y * m.m[1][3] + i.z * m.m[2][3] + i.w * m.m[3][3];
+		return v;
+	}
+
+	inline mat4x4 mat_pointAt(vec3& pos, vec3& target, vec3& up)
+	{
+		vec3 newFor = target - pos;
+		norm(newFor);
+
+		vec3 a = newFor * dot_prod(up, newFor);
+		vec3 newUp = up - a;
+		norm(newUp);
+
+		math::vec3 newRight = cross_prod(newUp, newFor);
+
+		mat4x4 matrix;
+		matrix.m[0][0] = newRight.x;	matrix.m[0][1] = newRight.y;	matrix.m[0][2] = newRight.z;	matrix.m[0][3] = 0.0f;
+		matrix.m[1][0] = newUp.x;		matrix.m[1][1] = newUp.y;		matrix.m[1][2] = newUp.z;		matrix.m[1][3] = 0.0f;
+		matrix.m[2][0] = newFor.x;   	matrix.m[2][1] = newFor.y;   	matrix.m[2][2] = newFor.z;	    matrix.m[2][3] = 0.0f;
+		matrix.m[3][0] = pos.x;			matrix.m[3][1] = pos.y;			matrix.m[3][2] = pos.z;			matrix.m[3][3] = 1.0f;
+		return matrix;
+	}
 	const float PI = 3.14159;
 
 	const float aspect = 9.0 / 16.0;
