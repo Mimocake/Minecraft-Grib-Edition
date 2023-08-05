@@ -16,14 +16,14 @@ namespace math
 		friend vec3 operator / (vec3 v, float f) { return vec3(v.x / f,v. y / f, v.z / f); }
 		void operator += (vec3 v) { x += v.x; y += v.y; z += v.z; }
 		void operator -= (vec3 v) { x -= v.x; y -= v.y; z -= v.z; }
-		void operator *= (float f) { x * f; y * f; z * f; }
-		void operator /= (float f) { x / f, y / f, z / f; }
+		void operator *= (float f) { x *= f; y *= f; z *= f; }
+		void operator /= (float f) { x /= f, y /= f, z /= f; }
 		friend float dot_prod(vec3 v1, vec3 v2) { return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z; }
 		friend vec3 cross_prod(vec3 a, vec3 b) { return vec3(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x); }
-		friend void norm(vec3& vec) { vec /= sqrt(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z); }
+		void norm() { *this /= sqrt(x * x + y * y + z * z); }
 		friend vec3 intersectPlane(vec3& plane_p, vec3& plane_n, vec3& lineStart, vec3& lineEnd)
 		{
-			norm(plane_n);
+			plane_n.norm();
 			float plane_d = -dot_prod(plane_n, plane_p);
 			float ad = dot_prod(lineStart, plane_n);
 			float bd = dot_prod(lineEnd, plane_n);
@@ -112,11 +112,11 @@ namespace math
 	inline mat4x4 mat_pointAt(vec3& pos, vec3& target, vec3& up)
 	{
 		vec3 newFor = target - pos;
-		norm(newFor);
+		newFor.norm();
 
 		vec3 a = newFor * dot_prod(up, newFor);
 		vec3 newUp = up - a;
-		norm(newUp);
+		newUp.norm();
 
 		math::vec3 newRight = cross_prod(newUp, newFor);
 

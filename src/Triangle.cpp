@@ -20,12 +20,12 @@ void Triangle::project(mat4x4 matView)
 
 vector<Triangle> clip_fun(math::vec3 plane_p, math::vec3 plane_n, Triangle& tri)
 {
-	norm(plane_p);
+	plane_p.norm();
 
 	auto dist = [&](vec3& p)
 	{
 		vec3 n = p;
-		norm(n);
+		n.norm();
 		return (plane_n.x * p.x + plane_n.y * p.y + plane_n.z * p.z - dot_prod(plane_n, plane_p));
 	};
 
