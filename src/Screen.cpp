@@ -10,32 +10,41 @@ Screen::Screen()  : mouse_offset(Vector2f(0, 0)), tot_mouse_Yoffset(0)
     Mouse::setPosition(Vector2i(temp.getSize().x / 2, temp.getSize().y / 2));
     window.create(VideoMode(), L"Minecraft", Style::Fullscreen);
 	window.setVerticalSyncEnabled(true);
-	window.setMouseCursorVisible(true);
+	window.setMouseCursorVisible(false);
     for (int i = 0; i < 6; i++) keys[i] = false;
 }
 
-void Screen::draw_block(vec3 cam, Block& block)
+void Screen::clear() { window.clear(); }
+void Screen::display() { window.display(); }
+
+void Screen::draw_block(vec3 cam, Block& block, mat4x4 matView)
 {
     if (window.isOpen())
     {
-        window.clear();
         for (int i = 0; i < block.tris.size(); i++)
         {
             vec3 cam_dir = cam - block.tris[i].coords[0];
             cam_dir.norm();
-            if (dot_prod(cam_dir, block.tris[i].normal) > 0)
+            vec3 line1 = block.tris[i].coords[1] - block.tris[i].coords[0];
+            vec3 line2 = block.tris[i].coords[2] - block.tris[i].coords[0];
+            if (dot_prod(cam_dir, cross_prod(line1, line2)) > 0)
             {
+                Triangle viewed, proj;
+                for (int j = 0; j < 3; j++)
+                {
+                    viewed.coords[j] = mat4x4_mult(block.tris[i].coords[j], matView);
+                    proj = viewed.project();
+                }
                 VertexArray tri(LinesStrip, 4);
                 for (int j = 0; j < 4; j++)
                 {
-                    float x = (block.tris[i].proj_coords[j % 3].x + 1) * window.getSize().x / 2;
-                    float y = (block.tris[i].proj_coords[j % 3].y + 1) * window.getSize().y / 2;
+                    float x = (proj.coords[j % 3].x + 1) * window.getSize().x / 2;
+                    float y = (proj.coords[j % 3].y + 1) * window.getSize().y / 2;
                     tri[j] = Vector2f(x, y);
                 }
                 window.draw(tri);
             }
         }
-        window.display();
     }
 }
 

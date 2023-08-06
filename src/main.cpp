@@ -1,7 +1,6 @@
 #include "Screen.hpp"
 #include "Camera.hpp"
 #include <iostream>
-#include <Windows.h>
 
 using namespace std;
 using namespace sf;
@@ -13,7 +12,6 @@ int main()
     Screen screen;
     Block block(vec3(-0.5, -0.5, 2));
     vec3 up(0, 1, 0);
-    cam.look_dir.norm();
     
     while (screen.events_handling())
     {   
@@ -36,9 +34,10 @@ int main()
         vec3 target = cam.loc + cam.look_dir;
         mat4x4 matCam = mat_pointAt(cam.loc, target, up);
         mat4x4 matView = mat_inverse(matCam);
-        block.project(matView);
 
-        screen.draw_block(cam.loc, block);
+        screen.clear();
+        screen.draw_block(cam.loc, block, matView);
+        screen.display();
     }
     return 0;
 }

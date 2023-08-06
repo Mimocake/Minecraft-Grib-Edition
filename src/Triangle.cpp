@@ -5,17 +5,17 @@ using namespace math;
 Triangle::Triangle(vec3 p1, vec3 p2, vec3 p3)
 {
 	coords[0] = p1; coords[1] = p2; coords[2] = p3;
-	normal = cross_prod(p2 - p1, p3 - p1);
 }
 
-void Triangle::project(mat4x4 matView)
+Triangle Triangle::project()
 {
+	Triangle proj;
 	for (int j = 0; j < 3; j++)
 	{
-		viewed_coords[j] = mat4x4_mult(coords[j], matView);
-		proj_coords[j] = mat4x4_mult(viewed_coords[j], proj_mat);
-		proj_coords[j].x /= proj_coords[j].z; proj_coords[j].y /= proj_coords[j].z;
+		proj.coords[j] = mat4x4_mult(coords[j], proj_mat);
+		proj.coords[j].x /= proj.coords[j].z; proj.coords[j].y /= proj.coords[j].z;
 	}
+	return proj;
 }
 
 vector<Triangle> clip_fun(math::vec3 plane_p, math::vec3 plane_n, Triangle& tri)

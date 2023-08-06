@@ -30,11 +30,3 @@ Block::Block(vec3 origin)
 		Triangle(vec3(origin.x + 1, origin.y, origin.z + 1), vec3(origin.x, origin.y, origin.z), vec3(origin.x + 1, origin.y, origin.z)),
 	};
 }
-
-void Block::project(math::mat4x4 matView)
-{
-	for (int i = 0; i < tris.size(); i++)
-	{
-		tris[i].project(matView);
-	}
-}

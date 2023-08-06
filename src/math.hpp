@@ -127,8 +127,8 @@ namespace math
 		matrix.m[3][0] = pos.x;			matrix.m[3][1] = pos.y;			matrix.m[3][2] = pos.z;			matrix.m[3][3] = 1.0f;
 		return matrix;
 	}
-	const float PI = 3.14159;
 
+	const float PI = 3.14159;
 	const float aspect = 9.0 / 16.0;
 	const float fNear = 0.1;
 	const float fFar = 1000;
