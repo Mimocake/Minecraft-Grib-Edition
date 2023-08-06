@@ -3,7 +3,7 @@
 using namespace sf;
 using namespace math;
 
-Screen::Screen()  : mouse_offset(Vector2f(0, 0)), tot_mouse_Yoffset(0)
+Screen::Screen() : mouse_offset(Vector2f(0, 0))
 {   
     RenderWindow temp(VideoMode(), "", Style::Fullscreen);
     temp.close();
@@ -78,7 +78,7 @@ bool Screen::events_handling()
             mouse_offset.x = mouse_offset.x / (window.getSize().x / 2) + 1;
             mouse_offset.y = event.mouseMove.y - (float)window.getSize().y;
             mouse_offset.y = mouse_offset.y / (window.getSize().y / 2) + 1;
-            tot_mouse_Yoffset += (mouse_offset.y / sens);
+            mouse_offset.y *= aspect;
             Mouse::setPosition(Vector2i(window.getSize().x / 2, window.getSize().y / 2));
             break;
         }

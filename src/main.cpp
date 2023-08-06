@@ -27,7 +27,7 @@ int main()
         temp_dir.norm();
         float phi = acos(dot_prod(temp_dir, vec3(0, 0, 1)));
         phi = (temp_dir.x < 0) ? phi : -phi;
-        vec3 rot_vel = mat4x4_mult(vel, Matrix_MakeRotationY(phi));
+        vec3 rot_vel = mat4x4_mult(vel, rot_y(phi));
         cam.loc += rot_vel;
 
         cam.turn(screen.mouse_offset.x, screen.mouse_offset.y);

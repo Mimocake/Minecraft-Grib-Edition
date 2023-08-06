@@ -21,17 +21,7 @@ namespace math
 		friend float dot_prod(vec3 v1, vec3 v2) { return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z; }
 		friend vec3 cross_prod(vec3 a, vec3 b) { return vec3(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x); }
 		void norm() { *this /= sqrt(x * x + y * y + z * z); }
-		friend vec3 intersectPlane(vec3& plane_p, vec3& plane_n, vec3& lineStart, vec3& lineEnd)
-		{
-			plane_n.norm();
-			float plane_d = -dot_prod(plane_n, plane_p);
-			float ad = dot_prod(lineStart, plane_n);
-			float bd = dot_prod(lineEnd, plane_n);
-			float t = (-plane_d - ad) / (bd - ad);
-			vec3 lineStartToEnd = lineEnd - lineStart;
-			vec3 lineToIntersect = lineStartToEnd * t;
-			return lineStart + lineToIntersect;
-		}
+
 	};
 
 	class mat4x4
@@ -62,8 +52,20 @@ namespace math
 			return matrix;
 		}
 	};
-	
-	inline mat4x4 Matrix_MakeRotationX(float fAngleRad)
+
+	inline vec3 intersectPlane(vec3& plane_p, vec3& plane_n, vec3& lineStart, vec3& lineEnd)
+	{
+		plane_n.norm();
+		float plane_d = -dot_prod(plane_n, plane_p);
+		float ad = dot_prod(lineStart, plane_n);
+		float bd = dot_prod(lineEnd, plane_n);
+		float t = (-plane_d - ad) / (bd - ad);
+		vec3 lineStartToEnd = lineEnd - lineStart;
+		vec3 lineToIntersect = lineStartToEnd * t;
+		return lineStart + lineToIntersect;
+	}
+
+	inline mat4x4 rot_x(float fAngleRad)
 	{
 		mat4x4 matrix;
 		matrix.m[0][0] = 1.0f;
@@ -75,7 +77,7 @@ namespace math
 		return matrix;
 	}
 
-	inline mat4x4 Matrix_MakeRotationY(float fAngleRad)
+	inline mat4x4 rot_y(float fAngleRad)
 	{
 		mat4x4 matrix;
 		matrix.m[0][0] = cosf(fAngleRad);
@@ -87,7 +89,7 @@ namespace math
 		return matrix;
 	}
 
-	inline mat4x4 Matrix_MakeRotationZ(float fAngleRad)
+	inline mat4x4 rot_z(float fAngleRad)
 	{
 		mat4x4 matrix;
 		matrix.m[0][0] = cosf(fAngleRad);
@@ -133,13 +135,13 @@ namespace math
 	const float fNear = 0.1;
 	const float fFar = 1000;
 	const float FOV = 90;
-	const float sens = 0.8;
+	const float sens = 0.6;
 
-	const std::vector<std::vector<float>> proj_vec = {
+	const mat4x4 proj_mat(std::vector<std::vector<float>>
+	{
 		{aspect / tanf(FOV / 2 / 180 * PI), 0, 0, 0},
 		{0, 1 / tanf(FOV / 2 / 180 * PI), 0, 0},
 		{0, 0, fFar / (fFar - fNear), 1},
 		{0, 0, -fFar * fNear / (fFar - fNear), 0}
-	};
-	const mat4x4 proj_mat(proj_vec);
+	});
 };

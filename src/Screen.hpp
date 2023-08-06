@@ -9,7 +9,6 @@ private:
 public:
 	bool keys[6];
 	sf::Vector2f mouse_offset;
-	float tot_mouse_Yoffset;
 	Screen();
 	void clear();
 	void display();
