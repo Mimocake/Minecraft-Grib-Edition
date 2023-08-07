@@ -36,7 +36,7 @@ void Screen::draw_block(vec3 cam, Block& block, mat4x4 matView)
                     viewed.coords[j] = mat4x4_mult(block.tris[i].coords[j], matView);
                 }
 
-                vector<Triangle> clipped = viewed.clip_fun(vec3(0, 0, 0.1), vec3(0, 0, 1));
+                vector<Triangle> clipped = viewed.clip_fun(vec3(0, 0, 0.3), vec3(0, 0, 1));
                 for (int n = 0; n < clipped.size(); n++)
                 {
                     clipped[n] = clipped[n].project();
@@ -73,13 +73,13 @@ void Screen::draw_block(vec3 cam, Block& block, mat4x4 matView)
                     {
                         float x = (t.coords[j % 3].x + 1) * window.getSize().x / 2;
                         float y = (t.coords[j % 3].y + 1) * window.getSize().y / 2;
-                        outline[j] = Vector2f(x, y);
+                        outline[j].position = Vector2f(x, y);
                     }
                     for (int j = 0; j < 3; j++)
                     {
                         float x = (t.coords[j].x + 1) * window.getSize().x / 2;
                         float y = (t.coords[j].y + 1) * window.getSize().y / 2;
-                        tri[j] = Vector2f(x, y);
+                        tri[j].position = Vector2f(x, y);
                         tri[j].color = Color(150, 150, 150);
                     }
                     window.draw(tri);
