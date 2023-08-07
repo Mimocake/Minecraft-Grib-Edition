@@ -18,9 +18,9 @@ Triangle Triangle::project()
 	return proj;
 }
 
-vector<Triangle> clip_fun(math::vec3 plane_p, math::vec3 plane_n, Triangle& tri)
+vector<Triangle> Triangle::clip_fun(math::vec3 plane_p, math::vec3 plane_n)
 {
-	plane_p.norm();
+	plane_n.norm();
 
 	auto dist = [&](vec3& p)
 	{
@@ -34,12 +34,12 @@ vector<Triangle> clip_fun(math::vec3 plane_p, math::vec3 plane_n, Triangle& tri)
 
 	for (int i = 0; i < 3; i++)
 	{
-		if (dist(tri.coords[i]) >= 0) inside[inside_count++] = tri.coords[i];
-		else outside[outside_count++] = tri.coords[i];
+		if (dist(this->coords[i]) >= 0) inside[inside_count++] = this->coords[i];
+		else outside[outside_count++] = this->coords[i];
 	}
 
 	if (inside_count == 0) return vector<Triangle>(0);
-	if (inside_count == 3) return vector<Triangle>(1, tri);
+	if (inside_count == 3) return vector<Triangle>(1, *this);
 	if (inside_count == 1 && outside_count == 2)
 	{
 		Triangle out;
@@ -52,11 +52,11 @@ vector<Triangle> clip_fun(math::vec3 plane_p, math::vec3 plane_n, Triangle& tri)
 	{
 		Triangle out1, out2;
 
-		out1.coords[0] = tri.coords[0];
-		out1.coords[1] = tri.coords[1];
+		out1.coords[0] = this->coords[0];
+		out1.coords[1] = this->coords[1];
 		out1.coords[2] = intersectPlane(plane_p, plane_n, inside[0], outside[0]);
 
-		out2.coords[0] = tri.coords[1];
+		out2.coords[0] = this->coords[1];
 		out2.coords[1] = out1.coords[2];
 		out2.coords[2] = intersectPlane(plane_p, plane_n, inside[1], outside[0]);
 

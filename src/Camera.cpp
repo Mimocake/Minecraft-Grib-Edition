@@ -17,7 +17,6 @@ void Camera::turn(float& x, float& y)
 		y = 0.5 - prev_angle_y; angle_y = 0.5;
 	}
 	else y *= sens;
-	std::cout << prev_angle_y << " " << angle_y << std::endl;
 
 	vec3 hor_dir(look_dir.x, 0, look_dir.z);
 	hor_dir.norm();

@@ -33,16 +33,25 @@ void Screen::draw_block(vec3 cam, Block& block, mat4x4 matView)
                 for (int j = 0; j < 3; j++)
                 {
                     viewed.coords[j] = mat4x4_mult(block.tris[i].coords[j], matView);
-                    proj = viewed.project();
                 }
-                VertexArray tri(LinesStrip, 4);
-                for (int j = 0; j < 4; j++)
+
+                std::vector<Triangle> clipped = viewed.clip_fun(vec3(0, 0, 0.1), vec3(0, 0, 1));
+                for (int n = 0; n < clipped.size(); n++)
                 {
-                    float x = (proj.coords[j % 3].x + 1) * window.getSize().x / 2;
-                    float y = (proj.coords[j % 3].y + 1) * window.getSize().y / 2;
-                    tri[j] = Vector2f(x, y);
+                    clipped[n] = clipped[n].project();
                 }
-                window.draw(tri);
+
+                for (auto& t : clipped)
+                {
+                    VertexArray tri(LinesStrip, 4);
+                    for (int j = 0; j < 4; j++)
+                    {
+                        float x = (t.coords[j % 3].x + 1) * window.getSize().x / 2;
+                        float y = (t.coords[j % 3].y + 1) * window.getSize().y / 2;
+                        tri[j] = Vector2f(x, y);
+                    }
+                    window.draw(tri);
+                }
             }
         }
     }

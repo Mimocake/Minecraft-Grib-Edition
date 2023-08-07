@@ -8,4 +8,5 @@ public:
 	Triangle(math::vec3, math::vec3, math::vec3);
 	Triangle() {}
 	Triangle project();
+	std::vector<Triangle> clip_fun(math::vec3, math::vec3);
 };
