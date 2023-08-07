@@ -10,7 +10,6 @@ Screen::Screen() : mouse_offset(Vector2f(0, 0))
     temp.close();
     Mouse::setPosition(Vector2i(temp.getSize().x / 2, temp.getSize().y / 2));
     window.create(VideoMode(), L"Minecraft", Style::Fullscreen);
-	window.setVerticalSyncEnabled(true);
 	window.setMouseCursorVisible(false);
     for (int i = 0; i < 6; i++) keys[i] = false;
 }
@@ -54,7 +53,7 @@ void Screen::draw_block(vec3 cam, Block& block, mat4x4 matView)
                         {
                         case 0: new_t = t.clip_fun(vec3(0, -1, 0), vec3(0, 1, 0)); break; //TOP
                         case 1: new_t = t.clip_fun(vec3(0, 1, 0), vec3(0, -1, 0)); break; //BOTTOM
-                        case 2: new_t = t.clip_fun(vec3(-1, 0, 0), vec3(1, 0, 0)); break;  //LEFT
+                        case 2: new_t = t.clip_fun(vec3(-1, 0, 0), vec3(1, 0, 0)); break; //LEFT
                         case 3: new_t = t.clip_fun(vec3(1, 0, 0), vec3(-1, 0, 0)); break; //RIGHT
                         }
                         for (int z = 0; z < new_t.size(); z++)
@@ -68,6 +67,7 @@ void Screen::draw_block(vec3 cam, Block& block, mat4x4 matView)
                 for (auto& t : Q)
                 {
                     VertexArray tri(Triangles, 3);
+                    
                     VertexArray outline(LinesStrip, 4);
                     for (int j = 0; j < 4; j++)
                     {
@@ -90,6 +90,11 @@ void Screen::draw_block(vec3 cam, Block& block, mat4x4 matView)
     }
 }
 
+void Screen::show_debug_info(Text& FPS_text)
+{
+    window.draw(FPS_text);
+}
+
 bool Screen::events_handling()
 {
     Event event;
@@ -106,6 +111,7 @@ bool Screen::events_handling()
             if (event.key.code == Keyboard::D) keys[3] = true;
             if (event.key.code == Keyboard::Space) keys[4] = true;
             if (event.key.code == Keyboard::LShift) keys[5] = true;
+            if (event.key.code == Keyboard::F3) debug_info_key = !debug_info_key;
             break;
         case Event::KeyReleased:
             if (event.key.code == Keyboard::W) keys[0] = false;
