@@ -25,7 +25,7 @@ void Camera::turn(float& x, float& y)
 	vec3 temp_dir = mat4x4_mult(look_dir, rot_y(phi));
 	temp_dir = mat4x4_mult(temp_dir, rot_x(-y * PI));
 	look_dir = mat4x4_mult(temp_dir, rot_y(-phi));
-
+	
 	look_dir.norm();
 	x = 0; y = 0;
 }

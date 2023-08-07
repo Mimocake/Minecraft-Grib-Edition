@@ -2,6 +2,7 @@
 #include <iostream>
 using namespace sf;
 using namespace math;
+using namespace std;
 
 Screen::Screen() : mouse_offset(Vector2f(0, 0))
 {   
@@ -35,22 +36,54 @@ void Screen::draw_block(vec3 cam, Block& block, mat4x4 matView)
                     viewed.coords[j] = mat4x4_mult(block.tris[i].coords[j], matView);
                 }
 
-                std::vector<Triangle> clipped = viewed.clip_fun(vec3(0, 0, 0.1), vec3(0, 0, 1));
+                vector<Triangle> clipped = viewed.clip_fun(vec3(0, 0, 0.1), vec3(0, 0, 1));
                 for (int n = 0; n < clipped.size(); n++)
                 {
                     clipped[n] = clipped[n].project();
                 }
 
-                for (auto& t : clipped)
+                vector<Triangle> Q = clipped;
+                for (int x = 0; x < 4; x++)
                 {
-                    VertexArray tri(LinesStrip, 4);
+                    vector<Triangle> temp;
+                    for (int y = 0; y < Q.size(); y++)
+                    {
+                        Triangle t = Q[y];
+                        vector<Triangle> new_t;
+                        switch (x)
+                        {
+                        case 0: new_t = t.clip_fun(vec3(0, -1, 0), vec3(0, 1, 0)); break; //TOP
+                        case 1: new_t = t.clip_fun(vec3(0, 1, 0), vec3(0, -1, 0)); break; //BOTTOM
+                        case 2: new_t = t.clip_fun(vec3(-1, 0, 0), vec3(1, 0, 0)); break;  //LEFT
+                        case 3: new_t = t.clip_fun(vec3(1, 0, 0), vec3(-1, 0, 0)); break; //RIGHT
+                        }
+                        for (int z = 0; z < new_t.size(); z++)
+                        {
+                            temp.push_back(new_t[z]);
+                        }
+                    }
+                    Q = temp;
+                }
+
+                for (auto& t : Q)
+                {
+                    VertexArray tri(Triangles, 3);
+                    VertexArray outline(LinesStrip, 4);
                     for (int j = 0; j < 4; j++)
                     {
                         float x = (t.coords[j % 3].x + 1) * window.getSize().x / 2;
                         float y = (t.coords[j % 3].y + 1) * window.getSize().y / 2;
+                        outline[j] = Vector2f(x, y);
+                    }
+                    for (int j = 0; j < 3; j++)
+                    {
+                        float x = (t.coords[j].x + 1) * window.getSize().x / 2;
+                        float y = (t.coords[j].y + 1) * window.getSize().y / 2;
                         tri[j] = Vector2f(x, y);
+                        tri[j].color = Color(150, 150, 150);
                     }
                     window.draw(tri);
+                    window.draw(outline);
                 }
             }
         }

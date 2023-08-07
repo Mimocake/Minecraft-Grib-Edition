@@ -46,21 +46,20 @@ vector<Triangle> Triangle::clip_fun(math::vec3 plane_p, math::vec3 plane_n)
 		out.coords[0] = inside[0];
 		out.coords[1] = intersectPlane(plane_p, plane_n, inside[0], outside[0]);
 		out.coords[2] = intersectPlane(plane_p, plane_n, inside[0], outside[1]);
-		return vector<Triangle>(1, out);
+		return vector<Triangle>{ out };
 	}
 	if (inside_count == 2 && outside_count == 1)
 	{
 		Triangle out1, out2;
 
-		out1.coords[0] = this->coords[0];
-		out1.coords[1] = this->coords[1];
+		out1.coords[0] = inside[0];
+		out1.coords[1] = inside[1];
 		out1.coords[2] = intersectPlane(plane_p, plane_n, inside[0], outside[0]);
 
-		out2.coords[0] = this->coords[1];
+		out2.coords[0] = inside[1];
 		out2.coords[1] = out1.coords[2];
 		out2.coords[2] = intersectPlane(plane_p, plane_n, inside[1], outside[0]);
 
-		vector<Triangle> outvec = { out1, out2 };
-		return outvec;
+		return vector<Triangle>{ out1, out2 };
 	}
 }
