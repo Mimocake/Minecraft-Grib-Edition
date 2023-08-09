@@ -90,9 +90,12 @@ void Screen::draw_block(vec3 cam, Block& block, mat4x4 matView)
     }
 }
 
-void Screen::show_debug_info(Text& FPS_text)
+void Screen::show_debug_info(Text& FPS_text, Text& X_text, Text& Y_text, Text& Z_text)
 {
     window.draw(FPS_text);
+    window.draw(X_text);
+    window.draw(Y_text);
+    window.draw(Z_text);
 }
 
 bool Screen::events_handling()

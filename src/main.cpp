@@ -17,14 +17,36 @@ int main()
     Clock clock_for_movement;
     Clock clock_for_FPS;
 
-    Text FPS_text;
     Font font;
     font.loadFromFile("fonts/videotype.ttf");
+
+    Text FPS_text;
     FPS_text.setFont(font);
     FPS_text.setFillColor(Color::White);
     FPS_text.setPosition(sf::Vector2f(10, 10));
     FPS_text.setCharacterSize(25);
     FPS_text.setString("FPS: ");
+
+    Text X_text;
+    X_text.setFont(font);
+    X_text.setFillColor(Color::White);
+    X_text.setPosition(sf::Vector2f(10, 50));
+    X_text.setCharacterSize(25);
+    X_text.setString("X: ");
+
+    Text Y_text;
+    Y_text.setFont(font);
+    Y_text.setFillColor(Color::White);
+    Y_text.setPosition(sf::Vector2f(10, 90));
+    Y_text.setCharacterSize(25);
+    Y_text.setString("Y: ");
+
+    Text Z_text;
+    Z_text.setFont(font);
+    Z_text.setFillColor(Color::White);
+    Z_text.setPosition(sf::Vector2f(10, 130));
+    Z_text.setCharacterSize(25);
+    Z_text.setString("Z: ");
 
     while (screen.events_handling())
     {   
@@ -55,15 +77,23 @@ int main()
         screen.clear();
         screen.draw_block(cam.loc, block, matView);
 
-        if (clock_for_FPS.getElapsedTime().asMilliseconds() >= 500)
+        if (screen.debug_info_key)
         {
-            float elapsed_time = clock.getElapsedTime().asSeconds();
-            int fps = 1.0f / elapsed_time;
-            FPS_text.setString("FPS: " + to_string(fps));
-            clock_for_FPS.restart();
+            if (clock_for_FPS.getElapsedTime().asMilliseconds() >= 300)
+            {
+                float elapsed_time = clock.getElapsedTime().asSeconds();
+                int fps = 1.0f / elapsed_time;
+                FPS_text.setString("FPS: " + to_string(fps));
+                clock_for_FPS.restart();
+            }
+            clock.restart();
+
+            X_text.setString("X: " + to_string(cam.loc.x));
+            Y_text.setString("Y: " + to_string(-cam.loc.y));
+            Z_text.setString("Z: " + to_string(cam.loc.z));
+
+            screen.show_debug_info(FPS_text, X_text, Y_text, Z_text);
         }
-        clock.restart();
-        if(screen.debug_info_key) screen.show_debug_info(FPS_text);
 
         screen.display();
     }

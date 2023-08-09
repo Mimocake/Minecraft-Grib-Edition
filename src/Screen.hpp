@@ -14,6 +14,6 @@ public:
 	void clear();
 	void display();
 	void draw_block(math::vec3, Block&, math::mat4x4);
-	void show_debug_info(sf::Text&);
+	void show_debug_info(sf::Text&, sf::Text&, sf::Text&, sf::Text&);
 	bool events_handling();
 };
