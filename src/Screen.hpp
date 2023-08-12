@@ -13,7 +13,7 @@ public:
 	Screen();
 	void clear();
 	void display();
-	void draw_block(math::vec3, Block&, math::mat4x4);
+	void draw_block(math::vec3, Block&, math::mat4x4, sf::Texture&);
 	void show_debug_info(sf::Text&, sf::Text&, sf::Text&, sf::Text&);
 	bool events_handling();
 };

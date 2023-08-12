@@ -48,6 +48,9 @@ int main()
     Z_text.setCharacterSize(25);
     Z_text.setString("Z: ");
 
+    Texture texture;
+    texture.loadFromFile("textures/grass.png");
+
     while (screen.events_handling())
     {   
         if (clock_for_movement.getElapsedTime().asMilliseconds() >= 10)
@@ -75,7 +78,7 @@ int main()
         mat4x4 matView = mat_inverse(matCam);
 
         screen.clear();
-        screen.draw_block(cam.loc, block, matView);
+        screen.draw_block(cam.loc, block, matView, texture);
 
         if (screen.debug_info_key)
         {
@@ -89,7 +92,7 @@ int main()
             clock.restart();
 
             X_text.setString("X: " + to_string(cam.loc.x));
-            Y_text.setString("Y: " + to_string(-cam.loc.y));
+            Y_text.setString("Y: " + to_string(cam.loc.y));
             Z_text.setString("Z: " + to_string(cam.loc.z));
 
             screen.show_debug_info(FPS_text, X_text, Y_text, Z_text);

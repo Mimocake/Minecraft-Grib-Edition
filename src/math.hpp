@@ -5,12 +5,21 @@
 
 namespace math
 {
+	class vec2
+	{
+	public:
+		float u, v;
+		vec2() : u(0), v(0) {}
+		vec2(float uu, float vv) : u(uu), v(vv) {}
+	};
+
 	class vec3
 	{
 	public:
 		float x, y, z, w;
 		vec3() : x(0), y(0), z(0), w(1) {}
 		vec3(float xx, float yy, float zz) : x(xx), y(yy), z(zz), w(1) {}
+		vec3(float xx, float yy, float zz, float ww) : x(xx), y(yy), z(zz), w(ww) {}
 		friend vec3 operator + (vec3 v1, vec3 v2) { return vec3(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z); }
 		friend vec3 operator - (vec3 v1, vec3 v2) { return vec3(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z); }
 		friend vec3 operator * (vec3 v, float f) { return vec3(v.x * f, v.y * f, v.z * f); }
@@ -54,13 +63,13 @@ namespace math
 		}
 	};
 
-	inline vec3 intersectPlane(vec3& plane_p, vec3& plane_n, vec3& lineStart, vec3& lineEnd)
+	inline vec3 intersectPlane(vec3& plane_p, vec3& plane_n, vec3& lineStart, vec3& lineEnd, float& t)
 	{
 		plane_n.norm();
 		float plane_d = -dot_prod(plane_n, plane_p);
 		float ad = dot_prod(lineStart, plane_n);
 		float bd = dot_prod(lineEnd, plane_n);
-		float t = (-plane_d - ad) / (bd - ad);
+		t = (-plane_d - ad) / (bd - ad);
 		vec3 lineStartToEnd = lineEnd - lineStart;
 		vec3 lineToIntersect = lineStartToEnd * t;
 		return lineStart + lineToIntersect;

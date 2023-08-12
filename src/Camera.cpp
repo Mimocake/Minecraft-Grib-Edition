@@ -4,8 +4,6 @@ using namespace math;
 
 void Camera::turn(float& x, float& y)
 {
-	look_dir = mat4x4_mult(look_dir, rot_y(-x * PI * sens));
-
 	float prev_angle_y = angle_y;
 	angle_y = angle_y + (y * sens); 
 	if (prev_angle_y >= -0.5 && angle_y <= -0.5)
@@ -26,6 +24,8 @@ void Camera::turn(float& x, float& y)
 	temp_dir = mat4x4_mult(temp_dir, rot_x(-y * PI));
 	look_dir = mat4x4_mult(temp_dir, rot_y(-phi));
 	
+	look_dir = mat4x4_mult(look_dir, rot_y(-x * PI * sens));
+
 	look_dir.norm();
 	x = 0; y = 0;
 }

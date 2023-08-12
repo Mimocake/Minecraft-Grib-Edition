@@ -4,7 +4,7 @@ using namespace sf;
 using namespace math;
 using namespace std;
 
-Screen::Screen() : mouse_offset(Vector2f(0, 0))
+Screen::Screen() : mouse_offset(Vector2f(0, 0)), debug_info_key(false)
 {   
     RenderWindow temp(VideoMode(), "", Style::Fullscreen);
     temp.close();
@@ -17,7 +17,7 @@ Screen::Screen() : mouse_offset(Vector2f(0, 0))
 void Screen::clear() { window.clear(); }
 void Screen::display() { window.display(); }
 
-void Screen::draw_block(vec3 cam, Block& block, mat4x4 matView)
+void Screen::draw_block(vec3 cam, Block& block, mat4x4 matView, Texture& tex)
 {
     if (window.isOpen())
     {
@@ -33,12 +33,22 @@ void Screen::draw_block(vec3 cam, Block& block, mat4x4 matView)
                 for (int j = 0; j < 3; j++)
                 {
                     viewed.coords[j] = mat4x4_mult(block.tris[i].coords[j], matView);
+                    viewed.t_coords[j] = block.tris[i].t_coords[j];
                 }
 
                 vector<Triangle> clipped = viewed.clip_fun(vec3(0, 0, 0.3), vec3(0, 0, 1));
                 for (int n = 0; n < clipped.size(); n++)
                 {
+                    vec2 t_c[3];
+                    for (int r = 0; r < 3; r++)
+                    {
+                        t_c[r] = clipped[n].t_coords[r];
+                    }
                     clipped[n] = clipped[n].project();
+                    for (int r = 0; r < 3; r++)
+                    {
+                        clipped[n].t_coords[r] = t_c[r];
+                    }
                 }
 
                 vector<Triangle> Q = clipped;
@@ -80,10 +90,10 @@ void Screen::draw_block(vec3 cam, Block& block, mat4x4 matView)
                         float x = (t.coords[j].x + 1) * window.getSize().x / 2;
                         float y = (t.coords[j].y + 1) * window.getSize().y / 2;
                         tri[j].position = Vector2f(x, y);
-                        tri[j].color = Color(150, 150, 150);
+                        tri[j].texCoords = Vector2f(t.t_coords[j].u * tex.getSize().x, t.t_coords[j].v * tex.getSize().y);
                     }
-                    window.draw(tri);
-                    window.draw(outline);
+                    window.draw(tri, &tex);
+                    //window.draw(outline);
                 }
             }
         }
@@ -114,7 +124,11 @@ bool Screen::events_handling()
             if (event.key.code == Keyboard::D) keys[3] = true;
             if (event.key.code == Keyboard::Space) keys[4] = true;
             if (event.key.code == Keyboard::LShift) keys[5] = true;
-            if (event.key.code == Keyboard::F3) debug_info_key = !debug_info_key;
+            if (event.key.code == Keyboard::F3)
+            {
+                debug_info_key = !debug_info_key;
+                window.setVerticalSyncEnabled(!debug_info_key);
+            }
             break;
         case Event::KeyReleased:
             if (event.key.code == Keyboard::W) keys[0] = false;
